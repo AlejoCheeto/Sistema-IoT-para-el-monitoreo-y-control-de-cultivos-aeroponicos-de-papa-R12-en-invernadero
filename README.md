@@ -1,4 +1,4 @@
-# Sistema-IoT-para-el-monitoreo-y-control-de-cultivos-aerop-nicos-de-papa-R12-en-invernadero
+# Sistema-IoT-para-el-monitoreo-y-control-de-cultivos-aeropónicos-de-papa-R12-en-invernadero
 
 ## ¿Qué es y cómo está compuesto?
 Es un sistema de agricultura de precisión, compuesto por cuatro subsistemas diferentes, que permite el monitoreo de temperatura, humedad relativa, intensidad lumínica y pH del agua, además de realizar control del suministro de nutrientes mediante una electroválvula, a un cultivo aeropónico de papa R-12.
