@@ -21,17 +21,17 @@ uint8_t readReg(uint8_t reg, const void* pBuf, size_t size){
 
 float data_validation(float data, int lw_lim, int up_lim){
   if(!isnan(data)){
-    if(data > lw_lim){
-      if(!(data < up_lim)){
-        Serial.print("DATA VALIDATION ERROR:Data out of upper limit");
+    if(data >= lw_lim){
+      if(!(data <= up_lim)){
+        Serial.println("DATA VALIDATION ERROR:Data out of upper limit");
         data = 803;
       }
     }else{
-      Serial.print("DATA VALIDATION ERROR:Data out of lower limit");
+      Serial.println("DATA VALIDATION ERROR:Data out of lower limit");
       data = 802;
     }
   }else{
-    Serial.print("DATA VALIDATION ERROR: NaN reading of variable ");
+    Serial.println("DATA VALIDATION ERROR: NaN reading of variable ");
     data = 801;
   }
 
@@ -46,7 +46,7 @@ float LUX_read(const void* pBuf, size_t size){
   readReg(lux_reg, pBuf, size);
   data = _pBuf[0] << 8 | _pBuf[1];
   lux = (((float)data)/1.2);
-  lux = data_validation(lux,1,65535);
+  lux = data_validation(lux,0,65535);
   Serial.print("LUX lx =");
   Serial.println(lux);
 
@@ -62,6 +62,12 @@ uint8_t buf[4] = {0};
 float lux;
 
 void loop(){
-  lux = LUX_read(buf,2);
+  if ( Wire.requestFrom(address,2,0) != 0) {
+    lux = LUX_read(buf,2);
+  }
+  else{
+    lux = -1;
+    Serial.println("I2C devices is not found...");
+  }
   delay(3000);
 }
