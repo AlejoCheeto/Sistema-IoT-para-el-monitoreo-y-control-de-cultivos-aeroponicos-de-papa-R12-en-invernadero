@@ -489,7 +489,14 @@ void FSM_sensors_prueba(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
         break;
       case LUX_READ:
         Serial.println("LUX_READ");
-        lux_val = LUX_read(lux_buf,2);
+        if ( Wire.requestFrom(address,2,0) != 0) {
+          lux_val = LUX_read(buf,2);
+        }
+        else{
+          lux_val = -1;
+          Serial.println("I2C device is not found...");
+          Serial.println("Check the illuminance sensor connection")
+        }
         sen_st = KTD_2;
         break;
       case KTD_2:
