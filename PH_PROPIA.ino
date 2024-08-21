@@ -1,4 +1,23 @@
 #define PH_PIN 36
+float data_validation(float data, int lw_lim, int up_lim){
+  if(!isnan(data)){
+    if(data >= lw_lim){
+      if(!(data <= up_lim)){
+        Serial.println("DATA VALIDATION ERROR:Data out of upper limit");
+        data = 803;
+      }
+    }else{
+      Serial.println("DATA VALIDATION ERROR:Data out of lower limit");
+      data = 802;
+    }
+  }else{
+    Serial.println("DATA VALIDATION ERROR: NaN reading of variable ");
+    data = 801;
+  }
+
+  return data;
+}
+
 float voltage,phValue,temperature = 25;
 
 //float acidVoltage = 1870;
@@ -20,7 +39,7 @@ void loop() {
     float intercept = 6.88-slope*(neutralVoltage-1500)/3.0;
 
     phValue = slope*(voltage-1500)/3.0+intercept; //recta
-
+    phValue = data_validation(phValue,0,14);
     Serial.print("Voltage: ");
     Serial.println(voltage,1);
     Serial.print("  pH: ");
