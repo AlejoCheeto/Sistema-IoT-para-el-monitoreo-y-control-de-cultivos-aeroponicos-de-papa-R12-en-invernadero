@@ -434,6 +434,9 @@ float PH_read(float ph_acid,float acid_voltage, float ph_neutral, float neutral_
     intercept = ph_neutral - slope*(neutral_voltage-1500)/3.0;
 
     ph_value = slope*((voltage-1500)/3.0)+intercept;
+    ph_value = data_validation(ph_value,0,14);
+
+
     Serial.print("pH = ");
     Serial.println(ph_value);
 
@@ -495,7 +498,7 @@ void FSM_sensors_prueba(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
         else{
           lux_val = -1;
           Serial.println("I2C device is not found...");
-          Serial.println("Check the illuminance sensor connection")
+          Serial.println("Check the illuminance sensor connection");
         }
         sen_st = KTD_2;
         break;
