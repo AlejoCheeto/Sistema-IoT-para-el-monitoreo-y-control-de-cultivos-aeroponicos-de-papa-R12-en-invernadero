@@ -68,6 +68,7 @@ typedef enum
 
 unsigned long int heater_time;
 unsigned long int prev_time;
+int loraflag;
 
 //
 // For normal use, we require that you edit the sketch to replace FILLMEIN
@@ -237,6 +238,7 @@ void onEvent(ev_t ev) {
             }
             // Schedule next transmission
             os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);
+            loraflag = 0;
             break;
         case EV_LOST_TSYNC:
             Serial.println(F("EV_LOST_TSYNC"));
@@ -550,13 +552,34 @@ void FSM_sensors_prueba(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
         Serial.println("SEND_DATA");
         sprintf((char*)mydata,"\"deviceID\":\"Aeronodo\",\"temperatura\":\"%.2f\",\"humedad\":\"%.2f\",\"lux\":\"%.2f\",\"pH\":\"%.2f\"", t_mean, h_mean, lux_mean, ph_mean);
         Serial.print((char*)mydata);
+      
+        loraflag = 1;
+        while (loraflag == 1){
+          os_runloop_once();
+        }
 
         //Serial.println(sizeof(mydata));
         //mydata = (uint8_t*) mydata;
         //count = 0;
-        do_send(&sendjob);
+        //do_send(&sendjob);
+
+/*             if (onEvent() == EV_JOINED) {
+               // Send sensor data to LoRaWAN network
+              LMIC_setTxData2(1, mydata, sizeof(mydata)-1, 0);
+              os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);
+            } */
+
         sen_st = KTD_4;
         break;
+/*       case STATE_LORAWAN_CONNECT:
+            onEvent((ev_t)LMIC_getEvent());
+            if (LMIC_getEvent() == EV_JOINED) {
+               // Send sensor data to LoRaWAN network
+              LMIC_setTxData2(1, sensorData, sizeof(sensorData), 0);
+              os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);
+            }
+              currentState = KTD_4;
+        break; */
       case KTD_4:
         Serial.println("KTD_4");
         timerWrite(wdt_timer,0);
@@ -598,7 +621,7 @@ void FSM_sensors_prueba(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
         sen_st = DELAY;
         break;
       case DELAY:
-        Serial.println("DELAY");
+        //Serial.println("DELAY");
         if((prev_time - millis())<delay_time)
         {
           sen_st = DELAY;
@@ -615,6 +638,8 @@ void FSM_sensors_prueba(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
         break;
     }  
 }
+
+//*******************************************************************************
 
 void setup() {
 
@@ -667,9 +692,8 @@ void setup() {
 }
 
 void loop() {
-    os_runloop_once();
     //FSM_sensors(sht31,sht_data,lux_data,buf,mydata,&sendjob,wdt_timer);
 /*     Serial.println();
     Serial.println("LOOP ---------------------------------------------------"); */
-    //FSM_sensors_prueba(sht31,wdt_timer);
+    FSM_sensors_prueba(sht31,wdt_timer);
 }
