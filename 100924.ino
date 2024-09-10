@@ -119,7 +119,8 @@ static const u1_t PROGMEM APPKEY[16] = { 0x11, 0x11, 0x22, 0x22, 0x33, 0x33, 0x4
 void os_getDevKey(u1_t* buf) { memcpy_P(buf, APPKEY, 16); }
 
 //static uint8_t mydata[] = "\"AeroNodo\":\"nodo1\"";
-static uint8_t mydata[] = "\"deviceID\":\"Aeronodo\",\"temperatura\":\"88888\",\"humedad\":\"88888\",\"lux\":\"88888\",\"pH\":\"88888\"";
+//static uint8_t mydata[] = "\"deviceID\":\"Aeronodo\",\"temperatura\":\"88888\",\"humedad\":\"88888\",\"lux\":\"88888\",\"pH\":\"88888\"";
+static uint8_t mydata[] = "\"device\":\"Aeronodo\",\"temperatura\":\"88888\",\"humedad\":\"88888\",\"lux\":\"88888\",\"pH\":\"88888\"";
 //static uint8_t mydata[] = "CoCo";
 static osjob_t sendjob;
 const int maxSize = 100;
