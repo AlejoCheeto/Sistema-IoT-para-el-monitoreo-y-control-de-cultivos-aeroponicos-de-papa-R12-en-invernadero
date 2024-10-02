@@ -1,4 +1,4 @@
-#define PH_PIN 36
+#define PH_PIN 39
 float data_validation(float data, int lw_lim, int up_lim){
   if(!isnan(data)){
     if(data >= lw_lim){
@@ -20,11 +20,13 @@ float data_validation(float data, int lw_lim, int up_lim){
 
 float voltage,phValue,temperature = 25;
 
+//5V
 //float acidVoltage = 1870;
 //float neutralVoltage = 1420;
+//3V3
+float acidVoltage = 1980;
+float neutralVoltage = 1560;
 
-float acidVoltage = 2870;
-float neutralVoltage = 2130;
 
 void setup() {
   Serial.begin(115200);
@@ -34,9 +36,9 @@ void loop() {
   static unsigned long timepoint = millis();
   if(millis() - timepoint>6000){
     timepoint = millis();
-    voltage = analogRead(PH_PIN)/4095.0*5000;
-    float slope = (6.88-4.0)/((neutralVoltage-1500)/3.0-(acidVoltage-1500)/3.0);
-    float intercept = 6.88-slope*(neutralVoltage-1500)/3.0;
+    voltage = analogRead(PH_PIN)/4095.0*3300;
+    float slope = (6.9-4.0)/((neutralVoltage-1500)/3.0-(acidVoltage-1500)/3.0);
+    float intercept = 6.9-slope*(neutralVoltage-1500)/3.0;
 
     phValue = slope*(voltage-1500)/3.0+intercept; //recta
     phValue = data_validation(phValue,0,14);
