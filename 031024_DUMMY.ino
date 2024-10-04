@@ -1300,11 +1300,11 @@ void setup() {
     delay(5000);
   //***********************************************************
     // SHT SENSOR INITIALIZATION
-    //Serial.println("SHT30 initializated...");
-    //SHT31_setup(sht31);
+    Serial.println("SHT30 initializated...");
+    SHT31_setup(sht31);
   //***********************************************************
     // I2C COMMS INITIALIZATION
-    Wire.begin();
+   //Wire.begin();
   //***********************************************************
     // MCCI LoRaWAN LMIC INITIALIZATION 
     #ifdef VCC_ENABLE
