@@ -56,6 +56,7 @@ var todowithdatarcvfromiothub = function (message) {
     pH = message.body.pH
     //deviceID = message.body.deviceID
 	deviceID = message.body.device
+	LoRaRStatus = message.body.LoRaRStatus
 	
 	if(temperatura != '888888')
 	{
@@ -63,7 +64,7 @@ var todowithdatarcvfromiothub = function (message) {
 		console.log(datetime)
 		fechahora= datetime.toISOString().substr(0,10)+" "+datetime.toISOString().substr(11,8);
 		console.log(fechahora)
-		query = `INSERT INTO dbo.AEROPONIA_telemetria values('${fechahora}','${temperatura}','${humedad}','${lux}','${pH}','${deviceID}')`
+		query = `INSERT INTO dbo.AEROPONIA_telemetria values('${fechahora}','${temperatura}','${humedad}','${lux}','${pH}','${deviceID}',${LoRaRStatus})`
 		console.log(query)
 		writesqldb(query)
 	}
