@@ -280,7 +280,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // 0x70.
 //static const u1_t PROGMEM APPEUI[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70 };
 //static const u1_t PROGMEM APPEUI[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x08 };
-static const u1_t PROGMEM APPEUI[8] = { 0x07, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11 };
+static const u1_t PROGMEM APPEUI[8] = { 0x08, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11 };
 void os_getArtEui(u1_t* buf) { memcpy_P(buf, APPEUI, 8); }
 
 // This should also be in little-endian format, see above.
@@ -292,7 +292,7 @@ void os_getDevEui(u1_t* buf) { memcpy_P(buf, DEVEUI, 8); }
 // This key should be in big endian format (or, since it is not really a
 // number but a block of memory, endianness does not really apply). In
 // practice, a key taken from ttnctl can be copied as-is.
-static const u1_t PROGMEM APPKEY[16] = { 0x11, 0x11, 0x22, 0x22, 0x33, 0x33, 0x44, 0x44, 0x55, 0x55, 0x66, 0x66, 0x77, 0x77, 0x11, 0x11 };
+static const u1_t PROGMEM APPKEY[16] = { 0x11, 0x11, 0x22, 0x22, 0x33, 0x33, 0x44, 0x44, 0x55, 0x55, 0x66, 0x66, 0x77, 0x77, 0x88, 0x88 };
 //static const u1_t PROGMEM APPKEY[16] = { 0x88, 0x88, 0x77, 0x77, 0x66, 0x66, 0x55, 0x55, 0x44, 0x44, 0x33, 0x33, 0x22, 0x22, 0x11, 0x11 };
 void os_getDevKey(u1_t* buf) { memcpy_P(buf, APPKEY, 16); }
 
@@ -328,7 +328,7 @@ const int c = 10; // Number or readings after compute an averaged sample
 const int delay_time = 2000;    // Delay time between each data measurment (ms)
 
 // SHT30 timeouts variables
-const int heater_wait_timeout_min = 30;//min 
+const int heater_wait_timeout_min = 5;//min 
 const int heater_active_timeout_min = 1;//min
 //*****************************************************
 // MISC
@@ -456,6 +456,7 @@ void drawlorawan(bool state) {
   display.setCursor(0,0);
   display.println("");
   if (state == 1){
+    display.clearDisplay();
     display.print(F("LoRaWAN Status : \n"));
     display.println(F("Connected"));
     display.drawBitmap(
@@ -464,6 +465,7 @@ void drawlorawan(bool state) {
     connected_icon, 30, 30, 1);
   }
   else{
+    display.clearDisplay();
     display.print(F("LoRaWAN Status : \n"));
     display.println(F("Unconnected"));
     display.drawBitmap(
@@ -1121,7 +1123,7 @@ void FSM_sensors(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
           display.setTextColor(SSD1306_WHITE);
           display.setCursor(0,32);
           //display.println(F("Impossible to reach"));
-          display.println(F("Error de conexión"));
+          display.println(F("Error de conexiOn"));
           display.println(F("SHT30..."));
           display.display();
           delay(1000);
@@ -1153,8 +1155,8 @@ void FSM_sensors(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
           display.setCursor(0,32);
           //display.println(F("Impossible to reach"));
           //display.println(F("lux sensor..."));
-          display.println(F("Error de conexión"));
-          display.println(F("sensor de luz ..."))
+          display.println(F("Error de conexiOn"));
+          display.println(F("sensor de luz ..."));
           display.display();
           delay(1000);
         }
@@ -1230,7 +1232,7 @@ void FSM_sensors(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
         if((millis()-heater_time)>heater_active_timeout_ms)
         {
           Serial.println("HEATER OFF -------------------------");
-          /* sht_obj.heater(0); */
+          sht_obj.heater(0);
           heater_time = millis();
         }
         sen_st = KTD_5;
@@ -1240,7 +1242,15 @@ void FSM_sensors(Adafruit_SHT31& sht_obj,hw_timer_t* wdt_timer){
         if((millis()-heater_time>heater_wait_timeout_ms))
         {
           Serial.println("HEATER ON -------------------------");
-          /* sht_obj.heater(1); */
+          display.clearDisplay();
+          display.setTextSize(1);
+          display.setTextColor(SSD1306_WHITE);
+          display.setCursor(0,32);
+          display.println(F("Heater status:"));
+          display.println(F("ON"));
+          display.display();
+          delay(1000);
+          sht_obj.heater(1);
           heater_time = millis();
         }
         sen_st = KTD_5;
